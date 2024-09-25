@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.infy.controller;
 
 import java.time.Month;
@@ -29,77 +26,87 @@ import com.infy.service.MonthlyRewardService;
 /**
  * Transaction Controller class for REST API
  */
-
 @RestController
 @RequestMapping("/transaction")
 public class TransactionController {
-	private static final Logger logData = LoggerFactory.getLogger(TransactionController.class);
-	
-	@Autowired
-	MonthlyRewardService monthlyRewards;
-	
-	@Autowired
-	CustomerRewardRepository customerRewardRepository;
-	
-	@GetMapping("/getAllRecords")
-	public ResponseEntity<List<CustomerRecordDTO>> getAllRecords() {
-		try {
-			List<CustomerRecordDTO> customerRecordDto = new ArrayList<CustomerRecordDTO>();
-			customerRewardRepository.findAll().forEach(customerRecordDto::add);
-			if (customerRecordDto.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
+    private static final Logger logData = LoggerFactory.getLogger(TransactionController.class);
+    
+    @Autowired
+    private MonthlyRewardService monthlyRewards;
 
-			return new ResponseEntity<>(customerRecordDto, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@GetMapping("/getRecordsByCustomerId")
-	public ResponseEntity<List<CustomerRecordDTO>> getRecordsByCustomerId(@RequestParam(required = false) int customerId) {
-		try {
-			List<CustomerRecordDTO> customerRecordDto = new ArrayList<CustomerRecordDTO>();
+    @Autowired
+    private CustomerRewardRepository customerRewardRepository;
 
-			if (customerId<=0) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			} else if(customerId>0) {
-				customerRewardRepository.findByCustomerId(customerId).forEach(customerRecordDto::add); // show record by CustomerId
-			}
-			if (customerRecordDto.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
+    @GetMapping("/getAllRecords")
+    public ResponseEntity<List<CustomerRecordDTO>> getAllRecords() {
+        try {
+            List<CustomerRecordDTO> customerRecordDto = new ArrayList<>();
+            customerRewardRepository.findAll().forEach(customerRecordDto::add);
+            
+            if (customerRecordDto.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(customerRecordDto, HttpStatus.OK);
+        } catch (Exception e) {
+            logData.error("Error fetching all records", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-			return new ResponseEntity<>(customerRecordDto, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@PostMapping("/insertRecord")
+    @GetMapping("/getRecordsByCustomerId")
+    public ResponseEntity<List<CustomerRecordDTO>> getRecordsByCustomerId(@RequestParam int customerId) {
+        if (customerId <= 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Changed to BAD_REQUEST for invalid customerId
+        }
+
+        try {
+            List<CustomerRecordDTO> customerRecordDto = customerRewardRepository.findByCustomerId(customerId);
+            
+            if (customerRecordDto.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(customerRecordDto, HttpStatus.OK);
+        } catch (Exception e) {
+            logData.error("Error fetching records for Customer ID: " + customerId, e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/insertRecord")
     public ResponseEntity<String> insertRecord(@Valid @RequestBody CustomerRecordDTO customerRecordDTO) {
-		logData.info("insertRecord API called");
-		monthlyRewards.insertRecord(customerRecordDTO);
-		return ResponseEntity.ok("Transaction procesed successfully!");
-		
-	}
-	
-	@PostMapping("/calculateMonthlyRewards")
-    public ResponseEntity<Map<Month, Double>> calculateMonthlyRewards() {
-		List<CustomerRecordDTO> customerRecordDto = new ArrayList<CustomerRecordDTO>();
-		customerRewardRepository.findAll().forEach(customerRecordDto::add);
-		
-		Map<Month, Double> rewards = monthlyRewards.getMonthlyTotalRewardPoint(customerRecordDto);
-        return ResponseEntity.ok(rewards);
-    }
-	
-	@PostMapping("/totalRewardsByCustmer")
-    public ResponseEntity<Map<Month, Double>> calculateRewardsByCustmer(@RequestParam(required = false) int customerId) {
-		List<CustomerRecordDTO> customerRecordDto = new ArrayList<CustomerRecordDTO>();
-		customerRewardRepository.findByCustomerId(customerId).forEach(customerRecordDto::add);
-		
-		Map<Month, Double> rewards = monthlyRewards.getMonthlyTotalRewardPoint(customerRecordDto);
-        return ResponseEntity.ok(rewards);
+        logData.info("insertRecord API called with data: {}", customerRecordDTO);
+        monthlyRewards.insertRecord(customerRecordDTO);
+        return ResponseEntity.ok("Transaction procesed successfully!");
     }
 
+    @PostMapping("/calculateMonthlyRewards")
+    public ResponseEntity<Map<Month, Double>> calculateMonthlyRewards() {
+        try {
+            List<CustomerRecordDTO> customerRecordDto = new ArrayList<>();
+            customerRewardRepository.findAll().forEach(customerRecordDto::add);
+
+            Map<Month, Double> rewards = monthlyRewards.getMonthlyTotalRewardPoint(customerRecordDto);
+            return ResponseEntity.ok(rewards);
+        } catch (Exception e) {
+            logData.error("Error calculating monthly rewards", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/totalRewardsByCustomer")
+    public ResponseEntity<Map<Month, Double>> calculateRewardsByCustomer(@RequestParam int customerId) {
+        if (customerId <= 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Changed to BAD_REQUEST for invalid customerId
+        }
+
+        try {
+            List<CustomerRecordDTO> customerRecordDto = customerRewardRepository.findByCustomerId(customerId);
+
+            Map<Month, Double> rewards = monthlyRewards.getMonthlyTotalRewardPoint(customerRecordDto);
+            return ResponseEntity.ok(rewards);
+        } catch (Exception e) {
+            logData.error("Error calculating rewards for Customer ID: " + customerId, e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

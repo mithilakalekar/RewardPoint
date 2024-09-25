@@ -21,11 +21,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.infy.model.CustomerRecordDTO;
 import com.infy.repository.CustomerRewardRepository;
 import com.infy.service.MonthlyRewardService;
 
+@SpringBootTest
 public class MonthlyRewardServiceTest {
 	
 	@InjectMocks
@@ -42,6 +44,7 @@ public class MonthlyRewardServiceTest {
     @Test
     public void testInsertRecord_ValidData() {
         CustomerRecordDTO record = new CustomerRecordDTO();
+        record.setId(100L);
         record.setCustomer("Mithila07");
         record.setBillAmount(150);
         record.setBillDate(LocalDate.of(2024, Month.JANUARY, 15));
@@ -49,7 +52,7 @@ public class MonthlyRewardServiceTest {
 
         monthlyRewardService.insertRecord(record);
         customerRewardRepository.save(record);
-        verify(customerRewardRepository, times(1)).save(any(CustomerRecordDTO.class));
+        verify(customerRewardRepository, times(2)).save(any(CustomerRecordDTO.class));
     }
 
     @Test

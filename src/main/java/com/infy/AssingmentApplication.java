@@ -9,7 +9,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.infy")
 public class AssingmentApplication implements ApplicationRunner {
 
 	public static final Log LOGGER = LogFactory.getLog(AssingmentApplication.class);

@@ -31,55 +31,46 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "record")
 public class CustomerRecordDTO {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@Column(name = "customer")
-	private String customerName;
-	
-	@Column(name = "customerId")
-	@NotNull(message = "CustomerId cannot be Null")
-	private int customerId;
-	
-	@Column(name = "billDate")
-	@NotNull(message = "billDate cannot be Null")
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private LocalDate billDate;  //month for bill transaction
-	
-	@Column(name = "billAmount")
-	@NotNull(message = "billAmount cannot be Null")
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    @Column(name = "customerName")
+    private String customerName; 
+    
+    @Column(name = "customerId")
+    @NotNull(message = "CustomerId cannot be Null")
+    private int customerId;
+    
+    @Column(name = "billDate")
+    @NotNull(message = "billDate cannot be Null")
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private LocalDate billDate;  // month for bill transaction
+    
+    @Column(name = "billAmount")
+    @NotNull(message = "billAmount cannot be Null")
     @Min(value = 0, message = "Amount must be greater than or equal to 0")
-	private double billAmount; // bill amount
+    private double billAmount; // bill amount
 
-	public CustomerRecordDTO() {
-		super();
-	}
-	/**
-	 * @param customer
-	 * @param billAmount
-	 */
-	public CustomerRecordDTO(int customer, double billAmount) {
-		super();
-		this.customerId = customer;
-		this.billAmount = billAmount;
-	}
-	
-	/**
-	 * All param constructor
-	 */
-	public CustomerRecordDTO(Long id, String customerName,
-			int customerId,
-			LocalDate billDate,
-			double billAmount) {
-		super();
-		this.id = id;
-		this.customerName = customerName;
-		this.customerId = customerId;
-		this.billDate = billDate;
-		this.billAmount = billAmount;
-	}
+    public CustomerRecordDTO() {
+        super();
+    }
+    
+    public CustomerRecordDTO(int customerId, double billAmount) {
+        super();
+        this.customerId = customerId;
+        this.billAmount = billAmount;
+    }
+    
+    public CustomerRecordDTO(Long id, String customerName, int customerId, LocalDate billDate, double billAmount) {
+        super();
+        this.id = id;
+        this.customerName = customerName;
+        this.customerId = customerId;
+        this.billDate = billDate;
+        this.billAmount = billAmount;
+    }
 
 	/**
 	 * @return the id
