@@ -50,31 +50,40 @@ public class MonthlyRewardService {
 	
 	public void insertRecord (CustomerRecordDTO record) {
 		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO();
-		boolean validate = validateRecord(record);
-		if(validate) {
-			logData.info("invalid customer data");
+		try {
+			if(!record.equals(null))  {
+				boolean validate = validateRecord(record);
+				if(validate) {
+					logData.info("invalid customer data");
+				}
+				else {
+					customerRecordDTO.setCustomer(record.getCustomer());
+					customerRecordDTO.setBillAmount(record.getBillAmount());
+					customerRecordDTO.setBillDate(record.getBillDate());
+					customerRecordDTO.setCustomerId(record.getCustomerId());
+					customerRewardRepository.save(customerRecordDTO);
+					logData.info("customer data inserted");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		else {
-			customerRecordDTO.setCustomer(record.getCustomer());
-			customerRecordDTO.setBillAmount(record.getBillAmount());
-			customerRecordDTO.setBillDate(record.getBillDate());
-			customerRecordDTO.setCustomerId(record.getCustomerId());
-			customerRewardRepository.save(customerRecordDTO);
-			logData.info("customer data inserted");
-		}
-		
 	}
 	
 	public boolean validateRecord (CustomerRecordDTO record) {
 		boolean flag = false;
-		if(record.getCustomer().equalsIgnoreCase(null)) {
-			flag = true;
-			if(record.getCustomerId()<= 0) {
+		if(!record.equals(null)) {
+			if(record.getCustomer()==null || record.getCustomer().isEmpty()) {
 				flag = true;
-				if(record.getBillAmount()<= 0d) {
+				if(record.getCustomerId()<= 0) {
 					flag = true;
+					if(record.getBillAmount()<= 0d) {
+						flag = true;
+					}
 				}
 			}
+		} else {
+			flag = true;
 		}
 		return flag;
 	}
@@ -93,7 +102,7 @@ public class MonthlyRewardService {
 		
 		//1 point for every dollar spent between $50 and $100 in each transaction
 		if (billAmount >=50 && billAmount <= 100) {
-			double onePoints = (billAmount-50)*1;
+			double onePoints =  (billAmount-50)*1;
 			rewardPoint += onePoints;
 		} 
 		

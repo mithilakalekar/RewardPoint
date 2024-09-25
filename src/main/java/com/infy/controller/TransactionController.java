@@ -42,15 +42,30 @@ public class TransactionController {
 	CustomerRewardRepository customerRewardRepository;
 	
 	@GetMapping("/getAllRecords")
-	public ResponseEntity<List<CustomerRecordDTO>> getAllRecords(@RequestParam(required = false) int customerId) {
+	public ResponseEntity<List<CustomerRecordDTO>> getAllRecords() {
+		try {
+			List<CustomerRecordDTO> customerRecordDto = new ArrayList<CustomerRecordDTO>();
+			customerRewardRepository.findAll().forEach(customerRecordDto::add);
+			if (customerRecordDto.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(customerRecordDto, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/getRecordsByCustomerId")
+	public ResponseEntity<List<CustomerRecordDTO>> getRecordsByCustomerId(@RequestParam(required = false) int customerId) {
 		try {
 			List<CustomerRecordDTO> customerRecordDto = new ArrayList<CustomerRecordDTO>();
 
-			if (customerId==0) //show all records
-				customerRewardRepository.findAll().forEach(customerRecordDto::add);
-			else
+			if (customerId<=0) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			} else if(customerId>0) {
 				customerRewardRepository.findByCustomerId(customerId).forEach(customerRecordDto::add); // show record by CustomerId
-
+			}
 			if (customerRecordDto.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}

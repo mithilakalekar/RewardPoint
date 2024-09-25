@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.stream.Collector;
 
@@ -25,8 +26,7 @@ public class CustomerRewardRepositoryTest {
 	
 	@Test
     public void testSave() {
-		LocalDate date = LocalDate.now();
-		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO(10l,"Mithila02",2,date,30d);
+		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO(10l,"Mithila02",2,LocalDate.of(2024, Month.JANUARY, 15),30d);
 		CustomerRecordDTO saved = customerRewardRepository.save(customerRecordDTO);
         assertNotNull(saved);
         assertEquals("Mithila02", saved.getCustomer());
@@ -34,8 +34,7 @@ public class CustomerRewardRepositoryTest {
 	
 	@Test
     public void testGetCustomerId() {
-		LocalDate date = LocalDate.now();
-		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO(20l,"Mithila07",2,date,30d);
+		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO(20l,"Mithila07",2,LocalDate.of(2024, Month.JANUARY, 15),30d);
 		CustomerRecordDTO saved = customerRewardRepository.save(customerRecordDTO);
 		List<CustomerRecordDTO> fetchCustomerId = customerRewardRepository.findByCustomerId(customerRecordDTO.getCustomerId());
         assertNotNull(fetchCustomerId);
