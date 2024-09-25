@@ -24,6 +24,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.infy.model.CustomerRecordDTO;
+import com.infy.model.MonthlyRewardDTO;
 import com.infy.repository.CustomerRewardRepository;
 import com.infy.service.MonthlyRewardService;
 
@@ -66,7 +67,6 @@ public class MonthlyRewardServiceTest {
         // Call the method under test
         monthlyRewardService.insertRecord(record);
 
-        // Verify that save was not called on the repository due to validation failure
         verify(customerRewardRepository, never()).save(any(CustomerRecordDTO.class));
     }
 
@@ -93,19 +93,19 @@ public class MonthlyRewardServiceTest {
         List<CustomerRecordDTO> records = new ArrayList<>();
         
         CustomerRecordDTO record1 = new CustomerRecordDTO();
-        record1.setBillAmount(150);
+        record1.setBillAmount(150);   //reward points= 150
         record1.setBillDate(LocalDate.of(2024, Month.JANUARY, 15));
         
         CustomerRecordDTO record2 = new CustomerRecordDTO();
-        record2.setBillAmount(75);
+        record2.setBillAmount(75);    //reward points= 25
         record2.setBillDate(LocalDate.of(2024, Month.JANUARY, 20));
 
         records.add(record1);
         records.add(record2);
 
-        Map<Month, Double> result = monthlyRewardService.getMonthlyTotalRewardPoint(records);
+        MonthlyRewardDTO result = monthlyRewardService.getMonthlyTotalRewardPoint(records);
 
-        assertEquals(150.0 + 25.0, result.get(Month.JANUARY)); // Total points for January should be 125.0
+        assertEquals(175, result.getTotalPoints()); 
     }
 
     @Test

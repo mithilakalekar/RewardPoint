@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.infy.controller.TransactionController;
 import com.infy.model.CustomerRecordDTO;
+import com.infy.model.MonthlyRewardDTO;
 import com.infy.repository.CustomerRewardRepository;
 import com.infy.service.MonthlyRewardService;
 
@@ -80,7 +81,7 @@ public class TransactionControllerTest {
         List<CustomerRecordDTO> records = Arrays.asList(new CustomerRecordDTO(30L,"Mithila08",3,LocalDate.of(2024, Month.JANUARY, 15),130d));
         
         when(customerRewardRepository.findAll()).thenReturn(records);
-        Map<Month, Double> rewards = new HashMap<>();
+        MonthlyRewardDTO rewards = new MonthlyRewardDTO();
         when(monthlyRewards.getMonthlyTotalRewardPoint(records)).thenReturn(rewards);
 
         mockMvc.perform(post("/transaction/calculateMonthlyRewards")) 
@@ -96,7 +97,7 @@ public class TransactionControllerTest {
         int customerId = 1; 
         when(customerRewardRepository.findByCustomerId(customerId)).thenReturn(records);
         
-        Map<Month, Double> rewards = new HashMap<>();
+        MonthlyRewardDTO rewards = new MonthlyRewardDTO();
         when(monthlyRewards.getMonthlyTotalRewardPoint(records)).thenReturn(rewards);
 
         mockMvc.perform(post("/transaction/totalRewardsByCustomer?customerId=" + customerId)) 

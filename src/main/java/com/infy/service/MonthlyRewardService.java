@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.infy.model.CustomerRecordDTO;
+import com.infy.model.MonthlyRewardDTO;
 import com.infy.repository.CustomerRewardRepository;
 
 /**
@@ -88,8 +89,8 @@ public class MonthlyRewardService {
 		return flag;
 	}
 	
-	public double calculateRewardPoints(Double billAmount) {
 		double rewardPoint = 0d;
+		public double calculateRewardPoints(Double billAmount) {
 		//2 points for every dollar spent over $100 in each transaction
 		if (billAmount > 100) {
 			double twoPoints = (billAmount-100)*2;
@@ -109,19 +110,25 @@ public class MonthlyRewardService {
 		return rewardPoint;
 	}
 
-	public Map<Month, Double> getMonthlyTotalRewardPoint(List<CustomerRecordDTO> custRecords) {
+	public MonthlyRewardDTO getMonthlyTotalRewardPoint(List<CustomerRecordDTO> custRecords) {
 		Map<Month, Double> monthlyRewardPoints = new HashMap<>();
-		custRecords.forEach(transaction -> {
+		MonthlyRewardDTO monthlyRewardDTO = new MonthlyRewardDTO();
+		double totalPoints = 0d;
+		for(CustomerRecordDTO transaction: custRecords) {
 			//get months for record
 			Month month = transaction.getBillDate().getMonth();
 			//get total reward points
-            double totalPoints = calculateRewardPoints(transaction.getBillAmount());
+            totalPoints = calculateRewardPoints(transaction.getBillAmount());
             
             monthlyRewardPoints.merge(month, totalPoints, Double::sum);
-            
             logData.info("Transaction for {}: {} points added.", month, totalPoints);
-		});
-		return monthlyRewardPoints;
+		}
+		
+		monthlyRewardDTO.setCustomerId(custRecords.get(0).getCustomerId());
+        monthlyRewardDTO.setMonthlyPoints(monthlyRewardPoints);
+        monthlyRewardDTO.setTotalPoints(totalPoints);
+        
+		return monthlyRewardDTO;
 	}
 	
 	public Map<Month, Double> getCustomerTotalRewardPoint(List<CustomerRecordDTO> custRecords) {
