@@ -64,11 +64,13 @@ public class TransactionController {
 
         try {
             List<CustomerRecordDTO> customerRecordDto = customerRewardRepository.findByCustomerId(customerId);
-            
-            if (customerRecordDto.isEmpty()) {
+            List<CustomerRecordDTO> filterList = customerRecordDto.stream()
+            		.filter(record->record.getCustomerId()==customerId)
+            		.collect(Collectors.toList());
+            if (filterList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(customerRecordDto, HttpStatus.OK);
+            return new ResponseEntity<>(filterList, HttpStatus.OK);
         } catch (Exception e) {
             logData.error("Error fetching records for Customer ID: " + customerId, e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -82,6 +84,7 @@ public class TransactionController {
         return ResponseEntity.ok("Transaction procesed successfully!");
     }
 
+    //Monthly rewards for all customers
     @PostMapping("/calculateMonthlyRewards")
     public ResponseEntity<MonthlyRewardDTO> calculateMonthlyRewards() {
         try {
@@ -96,8 +99,9 @@ public class TransactionController {
         }
     }
 
+    //Total reward point for customer
     @PostMapping("/totalRewardsByCustomer")
-    public ResponseEntity<MonthlyRewardDTO> calculateRewardsByCustomer(@RequestParam int customerId) {
+    public ResponseEntity<Map<Month, Double>> calculateRewardsByCustomer(@RequestParam int customerId) {
         if (customerId <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
         }
@@ -107,7 +111,7 @@ public class TransactionController {
             List<CustomerRecordDTO> filterList = customerRecordDto.stream()
             		.filter(record->record.getCustomerId()==customerId)
             		.collect(Collectors.toList());
-            MonthlyRewardDTO monthlyRewardDTO = monthlyRewards.getMonthlyTotalRewardPoint(filterList);
+            Map<Month, Double> monthlyRewardDTO = monthlyRewards.getCustomerTotalRewardPoint(filterList);
             return new ResponseEntity<>(monthlyRewardDTO, HttpStatus.OK);
         } catch (Exception e) {
             logData.error("Error calculating rewards for Customer ID: " + customerId, e);

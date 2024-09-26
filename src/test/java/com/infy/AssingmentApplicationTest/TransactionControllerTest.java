@@ -103,6 +103,6 @@ public class TransactionControllerTest {
         mockMvc.perform(post("/transaction/totalRewardsByCustomer?customerId=" + customerId)) 
                 .andExpect(status().isOk());
 
-        verify(monthlyRewards, times(1)).getMonthlyTotalRewardPoint(records);
+        verify(monthlyRewards, times(1)).getCustomerTotalRewardPoint(records);
     }
 }

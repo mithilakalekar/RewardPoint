@@ -4,6 +4,7 @@
 package com.infy.service;
 
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,7 @@ public class MonthlyRewardService {
 	
 		double rewardPoint = 0d;
 		public double calculateRewardPoints(Double billAmount) {
+		double rewardPoint = 0d;
 		//2 points for every dollar spent over $100 in each transaction
 		if (billAmount > 100) {
 			double twoPoints = (billAmount-100)*2;
@@ -114,19 +116,18 @@ public class MonthlyRewardService {
 		Map<Month, Double> monthlyRewardPoints = new HashMap<>();
 		MonthlyRewardDTO monthlyRewardDTO = new MonthlyRewardDTO();
 		double totalPoints = 0d;
+		int i =0;
 		for(CustomerRecordDTO transaction: custRecords) {
 			//get months for record
 			Month month = transaction.getBillDate().getMonth();
 			//get total reward points
             totalPoints = calculateRewardPoints(transaction.getBillAmount());
-            
+//            monthlyRewardPoints.putIfAbsent(month, totalPoints);
             monthlyRewardPoints.merge(month, totalPoints, Double::sum);
             logData.info("Transaction for {}: {} points added.", month, totalPoints);
+            
+            monthlyRewardDTO.setMonthlyPoints(monthlyRewardPoints);
 		}
-		
-		monthlyRewardDTO.setCustomerId(custRecords.get(0).getCustomerId());
-        monthlyRewardDTO.setMonthlyPoints(monthlyRewardPoints);
-        monthlyRewardDTO.setTotalPoints(totalPoints);
         
 		return monthlyRewardDTO;
 	}

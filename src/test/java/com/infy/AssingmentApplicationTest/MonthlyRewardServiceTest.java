@@ -105,7 +105,7 @@ public class MonthlyRewardServiceTest {
 
         MonthlyRewardDTO result = monthlyRewardService.getMonthlyTotalRewardPoint(records);
 
-        assertEquals(175, result.getTotalPoints()); 
+        assertEquals("{JANUARY=175.0}", result.getMonthlyPoints().toString()); 
     }
 
     @Test

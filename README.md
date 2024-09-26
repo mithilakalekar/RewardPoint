@@ -10,16 +10,16 @@ Total = 90 points
 The application calculates the reward points earned by each customer per month and totals them over a three-month period.
 
 #Features:
-1.RESTful API to calculate and retrieve reward points.
-2.Data set simulating customer transactions over three months.
-3.Calculation of monthly and total reward points for each customer.
+(1)RESTful API to calculate and retrieve reward points.
+(2).Data set simulating customer transactions over three months.
+(3)Calculation of monthly and total reward points for each customer.
 
 #Technologies Used:
-1.Java 8
-2.Spring Boot 2.6.2
-3.Maven
-4.JUnit for testing
-5.H2 Database for data storage
+(1)Java 8
+(2)Spring Boot 2.6.2
+(3)Maven
+(4)JUnit for testing
+(5)H2 Database for data storage
 
 #Getting Started:
 Prerequisites
@@ -50,34 +50,51 @@ Expected API response: HTTP Status code-200 OK
 Transaction procesed successfully!
 
 API 2: GET
-URL : http://localhost:8080/demo/transaction/getAllRecords?customerId=0
+URL : http://localhost:8080/demo/transaction/getAllRecords
+Expected API response: HTTP Status code-200 OK
+[
+    {
+        "id": 59,
+        "customerId": 3,
+        "billDate": "2024-10-23",
+        "billAmount": 120.0,
+        "customer": "Mithila03"
+    }
+]
+
+API 3: GET
+URL : http://localhost:8080/demo/transaction/getRecordsByCustomerId?customerId=3
 HEADER:  Content-Type = application/json
 Expected API response: HTTP Status code-200 OK
 [
-{
-"id": 3,
-"customerId": 3,
-"billDate": "2024-10-23",
-"billAmount": 120.0,
-"customer": "Mithila03"
-}
+    {
+        "id": 59,
+        "customerId": 3,
+        "billDate": "2024-10-23",
+        "billAmount": 120.0,
+        "customer": "Mithila03"
+    }
 ]
 
-API 3: POST
+API 4: POST
 URL : http://localhost:8080/demo/transaction/calculateMonthlyRewards
 HEADER:  Content-Type = application/json
 Expected API response: HTTP Status code-200 OK
 {
-"OCTOBER": 90.0,
-"SEPTEMBER": 90.0
+    "customerId": 0,
+    "monthlyPoints": {
+        "NOVEMBER": 90.0,
+        "OCTOBER": 90.0
+    },
+    "totalPoints": 0.0
 }
 
-API 4: POST
+API 5: POST
 URL : http://localhost:8080/demo/transaction/totalRewardsByCustmer?customerId=3
 HEADER:  Content-Type = application/json
 Expected API response: HTTP Status code-200 OK
 {
-"OCTOBER": 90.0
+    "OCTOBER": 90.0
 }
 
 #Sample Data Set:
