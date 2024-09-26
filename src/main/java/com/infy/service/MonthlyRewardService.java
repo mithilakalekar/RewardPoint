@@ -50,6 +50,7 @@ public class MonthlyRewardService {
         return customerRewardRepository.findById(id);
     }
 	
+	//Validate data and insert record into database
 	public void insertRecord (CustomerRecordDTO record) {
 		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO();
 		try {
@@ -72,6 +73,7 @@ public class MonthlyRewardService {
 		}
 	}
 	
+	//show validation error based on flag
 	public boolean validateRecord (CustomerRecordDTO record) {
 		boolean flag = false;
 		if(!record.equals(null)) {
@@ -90,28 +92,29 @@ public class MonthlyRewardService {
 		return flag;
 	}
 	
-		double rewardPoint = 0d;
-		public double calculateRewardPoints(Double billAmount) {
+	//calculation for reward point based on Bill amount
+	public double calculateRewardPoints(Double billAmount) {
 		double rewardPoint = 0d;
 		//2 points for every dollar spent over $100 in each transaction
 		if (billAmount > 100) {
 			double twoPoints = (billAmount-100)*2;
 			rewardPoint += twoPoints;
-			
+
 			//1 point for remaining $100
 			rewardPoint += (100-50)*1;
 			return rewardPoint;
 		} 
-		
+
 		//1 point for every dollar spent between $50 and $100 in each transaction
 		if (billAmount >=50 && billAmount <= 100) {
 			double onePoints =  (billAmount-50)*1;
 			rewardPoint += onePoints;
 		} 
-		
+
 		return rewardPoint;
 	}
 
+	//Calculate monthly reward points for all entries in database
 	public MonthlyRewardDTO getMonthlyTotalRewardPoint(List<CustomerRecordDTO> custRecords) {
 		Map<Month, Double> monthlyRewardPoints = new HashMap<>();
 		MonthlyRewardDTO monthlyRewardDTO = new MonthlyRewardDTO();
@@ -122,7 +125,6 @@ public class MonthlyRewardService {
 			Month month = transaction.getBillDate().getMonth();
 			//get total reward points
             totalPoints = calculateRewardPoints(transaction.getBillAmount());
-//            monthlyRewardPoints.putIfAbsent(month, totalPoints);
             monthlyRewardPoints.merge(month, totalPoints, Double::sum);
             logData.info("Transaction for {}: {} points added.", month, totalPoints);
             
@@ -132,6 +134,7 @@ public class MonthlyRewardService {
 		return monthlyRewardDTO;
 	}
 	
+	//calculate monthly reward points for customer (customerId) given
 	public Map<Month, Double> getCustomerTotalRewardPoint(List<CustomerRecordDTO> custRecords) {
 		Map<Month, Double> totalRewardPoints = new HashMap<>();
 		

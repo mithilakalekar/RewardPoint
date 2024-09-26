@@ -1,4 +1,4 @@
-package com.infy.AssingmentApplicationTest;
+package com.infy.RepositoryTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,6 +24,7 @@ public class CustomerRewardRepositoryTest {
 	@Autowired
 	CustomerRewardRepository customerRewardRepository;
 	
+	//Test Save repository function
 	@Test
     public void testSave() {
 		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO(10l,"Mithila02",2,LocalDate.of(2024, Month.JANUARY, 15),30d);
@@ -32,6 +33,7 @@ public class CustomerRewardRepositoryTest {
         assertEquals("Mithila02", saved.getCustomer());
     }
 	
+	//Test findByCustomerId repository function
 	@Test
     public void testGetCustomerId() {
 		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO(20l,"Mithila07",2,LocalDate.of(2024, Month.JANUARY, 15),30d);

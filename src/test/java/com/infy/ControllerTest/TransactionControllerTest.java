@@ -1,4 +1,4 @@
-package com.infy.AssingmentApplicationTest;
+package com.infy.ControllerTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -44,6 +44,7 @@ public class TransactionControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(transactionController).build();
     }
 
+    //Testing API - /getAllRecords
     @Test
     public void testGetAllRecords_NoRecords() throws Exception {
         when(customerRewardRepository.findAll()).thenReturn(Collections.emptyList());
@@ -52,6 +53,7 @@ public class TransactionControllerTest {
                 .andExpect(status().isNoContent()); 
     }
 
+    //Testing API - /getAllRecords
     @Test
     public void testGetAllRecords_WithRecords() throws Exception {
         List<CustomerRecordDTO> records = Arrays.asList(new CustomerRecordDTO(30L, "Mithila08", 3, LocalDate.of(2024, Month.JANUARY, 15), 190d));
@@ -63,6 +65,7 @@ public class TransactionControllerTest {
                 .andExpect(jsonPath("$[0].customer").value("Mithila08")); 
     }
 
+    //Testing API - /insertRecord
     @Test
     public void testInsertRecord() throws Exception {
         CustomerRecordDTO record = new CustomerRecordDTO(0L, "Mithila03", 3, LocalDate.of(2024, Month.OCTOBER, 23), 120d);
@@ -75,7 +78,8 @@ public class TransactionControllerTest {
 
         verify(monthlyRewards, times(1)).insertRecord(any(CustomerRecordDTO.class));
     }
-
+    
+    //Testing API - /calculateMonthlyRewards
     @Test
     public void testCalculateMonthlyRewards() throws Exception {
         List<CustomerRecordDTO> records = Arrays.asList(new CustomerRecordDTO(30L,"Mithila08",3,LocalDate.of(2024, Month.JANUARY, 15),130d));
@@ -90,6 +94,7 @@ public class TransactionControllerTest {
         verify(monthlyRewards, times(1)).getMonthlyTotalRewardPoint(records);
     }
 
+    //Testing API - /totalRewardsByCustomer
     @Test
     public void testCalculateRewardsByCustomer() throws Exception {
         List<CustomerRecordDTO> records = Arrays.asList(new CustomerRecordDTO(30L,"Mithila08",1,LocalDate.of(2024, Month.JANUARY, 15),150d));

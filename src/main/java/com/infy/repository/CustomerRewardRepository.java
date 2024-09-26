@@ -13,7 +13,8 @@ import com.infy.model.CustomerRecordDTO;
 
 
 /**
- * find by customer id repo
+ * find by customer id Repository
+ * find by id Repository
  */
 @Repository
 public interface CustomerRewardRepository extends JpaRepository<CustomerRecordDTO, Long> {

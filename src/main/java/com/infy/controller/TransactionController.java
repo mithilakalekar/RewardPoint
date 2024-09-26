@@ -40,6 +40,7 @@ public class TransactionController {
     @Autowired
     private CustomerRewardRepository customerRewardRepository;
 
+    // API to show all records from Database
     @GetMapping("/getAllRecords")
     public ResponseEntity<List<CustomerRecordDTO>> getAllRecords() {
         try {
@@ -56,6 +57,7 @@ public class TransactionController {
         }
     }
 
+ // API to show all records for respective customer
     @GetMapping("/getRecordsByCustomerId")
     public ResponseEntity<List<CustomerRecordDTO>> getRecordsByCustomerId(@RequestParam int customerId) {
         if (customerId <= 0) {
@@ -77,6 +79,7 @@ public class TransactionController {
         }
     }
 
+    // API to insert new record into database
     @PostMapping("/insertRecord")
     public ResponseEntity<String> insertRecord(@Valid @RequestBody CustomerRecordDTO customerRecordDTO) {
         logData.info("insertRecord API called with data: {}", customerRecordDTO);
@@ -99,7 +102,7 @@ public class TransactionController {
         }
     }
 
-    //Total reward point for customer
+    //Total reward point for customer (customerId) given
     @PostMapping("/totalRewardsByCustomer")
     public ResponseEntity<Map<Month, Double>> calculateRewardsByCustomer(@RequestParam int customerId) {
         if (customerId <= 0) {

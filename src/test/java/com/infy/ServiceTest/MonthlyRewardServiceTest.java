@@ -1,4 +1,4 @@
-package com.infy.AssingmentApplicationTest;
+package com.infy.ServiceTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -42,6 +42,7 @@ public class MonthlyRewardServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    //Test function insertRecord()
     @Test
     public void testInsertRecord_ValidData() {
         CustomerRecordDTO record = new CustomerRecordDTO();
@@ -56,6 +57,7 @@ public class MonthlyRewardServiceTest {
         verify(customerRewardRepository, times(2)).save(any(CustomerRecordDTO.class));
     }
 
+    //Test function insertRecord()
     @Test
     public void testInsertRecord_InvalidData() {
         CustomerRecordDTO record = new CustomerRecordDTO();
@@ -70,24 +72,28 @@ public class MonthlyRewardServiceTest {
         verify(customerRewardRepository, never()).save(any(CustomerRecordDTO.class));
     }
 
+    //Test function calculateRewardPoints()
     @Test
     public void testCalculateRewardPoints_Above100() {
         double rewardPoints = monthlyRewardService.calculateRewardPoints(150.0);
         assertEquals(150, rewardPoints); // 50 dollars over $100 gets 2 points each
     }
 
+    //Test function calculateRewardPoints()
     @Test
     public void testCalculateRewardPoints_Between50And100() {
         double rewardPoints = monthlyRewardService.calculateRewardPoints(75d);
         assertEquals(25, rewardPoints); // $75 - $50 = $25 gets 1 point each
     }
 
+    //Test function calculateRewardPoints()
     @Test
     public void testCalculateRewardPoints_Below50() {
         double rewardPoints = monthlyRewardService.calculateRewardPoints(30d);
         assertEquals(0, rewardPoints); // No points for less than $50
     }
 
+    //Test function getMonthlyTotalRewardPoint()
     @Test
     public void testGetMonthlyTotalRewardPoint() {
         List<CustomerRecordDTO> records = new ArrayList<>();
@@ -108,6 +114,7 @@ public class MonthlyRewardServiceTest {
         assertEquals("{JANUARY=175.0}", result.getMonthlyPoints().toString()); 
     }
 
+    //Test function validateRecord()
     @Test
     public void testValidateRecord_ValidData() {
         CustomerRecordDTO validRecord = new CustomerRecordDTO();
@@ -120,6 +127,7 @@ public class MonthlyRewardServiceTest {
         assertFalse(isValid); // Should return false for valid data
     }
 
+    //Test function validateRecord()
     @Test
     public void testValidateRecord_InvalidData() {
         CustomerRecordDTO invalidRecord = new CustomerRecordDTO();

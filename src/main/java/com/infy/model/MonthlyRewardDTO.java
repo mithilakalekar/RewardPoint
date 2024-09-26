@@ -1,8 +1,14 @@
+/**
+ * Monthly Reward object
+ */
 package com.infy.model;
 
 import java.time.Month;
 import java.util.Map;
 
+/**
+ * Show Month-wise rewards
+ */
 public class MonthlyRewardDTO {
 	private int customerId;
     private Map<Month, Double> monthlyPoints;

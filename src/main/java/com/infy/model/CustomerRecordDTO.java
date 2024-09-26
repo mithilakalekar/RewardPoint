@@ -1,6 +1,5 @@
 /**
  * Customer record object
- * Calculate reward point in this class
  */
 package com.infy.model;
 
