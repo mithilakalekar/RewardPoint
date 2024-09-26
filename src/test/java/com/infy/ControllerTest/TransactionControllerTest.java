@@ -62,17 +62,17 @@ public class TransactionControllerTest {
         mockMvc.perform(get("/transaction/getAllRecords")) 
                 .andExpect(status().isOk())
 //                .andExpect(jsonPath("$", hasSize(1))) 
-                .andExpect(jsonPath("$[0].customer").value("Mithila08")); 
+                .andExpect(jsonPath("$[0].customerName").value("Mithila08")); 
     }
 
     //Testing API - /insertRecord
     @Test
     public void testInsertRecord() throws Exception {
-        CustomerRecordDTO record = new CustomerRecordDTO(0L, "Mithila03", 3, LocalDate.of(2024, Month.OCTOBER, 23), 120d);
+        CustomerRecordDTO record = new CustomerRecordDTO(10L, "Mithila03", 3, LocalDate.of(2024, Month.OCTOBER, 23), 120d);
         
         mockMvc.perform(post("/transaction/insertRecord") 
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"id\":0,\"customerName\":\"Mithila03\", \"customerId\":3, \"billDate\":\"2024-10-23\", \"billAmount\":120 }"))
+                .content("{ \"id\":10,\"customerName\":\"Mithila03\", \"customerId\":3, \"billDate\":\"2024-10-23\", \"billAmount\":120 }"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Transaction procesed successfully!"));
 

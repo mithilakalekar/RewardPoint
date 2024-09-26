@@ -39,17 +39,17 @@ public class CustomerRecordDTO {
     private String customerName; 
     
     @Column(name = "customerId")
-    @NotNull(message = "CustomerId cannot be Null")
+//    @NotNull(message = "CustomerId cannot be Null")
     private int customerId;
     
     @Column(name = "billDate")
-    @NotNull(message = "billDate cannot be Null")
-    @JsonFormat(pattern="yyyy-MM-dd")
+//    @NotNull(message = "billDate cannot be Null")
+//    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate billDate;  // month for bill transaction
     
     @Column(name = "billAmount")
-    @NotNull(message = "billAmount cannot be Null")
-    @Min(value = 0, message = "Amount must be greater than or equal to 0")
+//    @NotNull(message = "billAmount cannot be Null")
+//    @Min(value = 0, message = "Amount must be greater than or equal to 0")
     private double billAmount; // bill amount
 
     public CustomerRecordDTO() {
@@ -88,14 +88,14 @@ public class CustomerRecordDTO {
 	/**
 	 * @return the customer
 	 */
-	public String getCustomer() {
+	public String getCustomerName() {
 		return customerName;
 	}
 
 	/**
 	 * @param customer the customer to set
 	 */
-	public void setCustomer(String customer) {
+	public void setCustomerName(String customer) {
 		this.customerName = customer;
 	}
 

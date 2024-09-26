@@ -83,8 +83,12 @@ public class TransactionController {
     @PostMapping("/insertRecord")
     public ResponseEntity<String> insertRecord(@Valid @RequestBody CustomerRecordDTO customerRecordDTO) {
         logData.info("insertRecord API called with data: {}", customerRecordDTO);
-        monthlyRewards.insertRecord(customerRecordDTO);
-        return ResponseEntity.ok("Transaction procesed successfully!");
+        boolean validFlag = false;
+        validFlag = monthlyRewards.insertRecord(customerRecordDTO);
+        if(!validFlag)
+        	return ResponseEntity.ok("Transaction procesed successfully!");
+        else
+        	return ResponseEntity.ok("Validation failed. Transaction Not inserted!");
     }
 
     //Monthly rewards for all customers

@@ -3,8 +3,9 @@
  */
 package com.infy.service;
 
+import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,42 +52,59 @@ public class MonthlyRewardService {
     }
 	
 	//Validate data and insert record into database
-	public void insertRecord (CustomerRecordDTO record) {
+	public boolean insertRecord (CustomerRecordDTO record) {
 		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO();
+		LocalDate date = LocalDate.now();
+		boolean validate = false;
 		try {
 			if(!record.equals(null))  {
-				boolean validate = validateRecord(record);
+				validate = validateRecord(record);
 				if(validate) {
 					logData.info("invalid customer data");
 				}
 				else {
-					customerRecordDTO.setCustomer(record.getCustomer());
-					customerRecordDTO.setBillAmount(record.getBillAmount());
-					customerRecordDTO.setBillDate(record.getBillDate());
-					customerRecordDTO.setCustomerId(record.getCustomerId());
+					customerRecordDTO.setCustomerName(record.getCustomerName()!=null?record.getCustomerName():"");
+					customerRecordDTO.setBillAmount(record.getBillAmount()>0d?record.getBillAmount():0);
+					customerRecordDTO.setBillDate(record.getBillDate()!=null?record.getBillDate():date);
+					customerRecordDTO.setCustomerId(record.getCustomerId()>0?record.getCustomerId():0);
 					customerRewardRepository.save(customerRecordDTO);
 					logData.info("customer data inserted");
 				}
 			}
 		} catch (Exception e) {
+			validate = true;
 			e.printStackTrace();
 		}
+		return validate;
 	}
 	
 	//show validation error based on flag
 	public boolean validateRecord (CustomerRecordDTO record) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		boolean flag = false;
+
 		if(!record.equals(null)) {
-			if(record.getCustomer()==null || record.getCustomer().isEmpty()) {
+			if(record.getCustomerName() == null || record.getCustomerName().equalsIgnoreCase(null)) {
 				flag = true;
-				if(record.getCustomerId()<= 0) {
-					flag = true;
-					if(record.getBillAmount()<= 0d) {
+			} else if(record.getCustomerId()<= 0 || String.valueOf(record.getCustomerId()).equalsIgnoreCase(null)) {    // need to check for CustomerId =  null/0
+				flag = true;
+			} else if(record.getBillAmount()<= 0d || String.valueOf(record.getBillAmount()).equalsIgnoreCase(null)) {
+				flag = true;
+			} else {
+				if(record.getBillDate()!=null) {
+					//validate Date format
+					try {
+						LocalDate parsedDate = LocalDate.parse(String.valueOf(record.getBillDate()),formatter);
+						logData.info("Date: ",parsedDate);
+					} catch(Exception e) {
 						flag = true;
+						logData.info("Invalid date inserted!");
 					}
 				}
+				else
+					flag = true;
 			}
-		} else {
+		}else {
 			flag = true;
 		}
 		return flag;
@@ -144,7 +162,7 @@ public class MonthlyRewardService {
 			//get total reward points
             double totalPoints = calculateRewardPoints(transaction.getBillAmount());
             totalRewardPoints.merge(month, totalPoints, Double::sum);
-            logData.info("Transaction for {}: {} points added.", transaction.getCustomer(), totalPoints);
+            logData.info("Transaction for {}: {} points added.", transaction.getCustomerName(), totalPoints);
 		});
 		
 		return totalRewardPoints;

@@ -30,7 +30,7 @@ public class CustomerRewardRepositoryTest {
 		CustomerRecordDTO customerRecordDTO = new CustomerRecordDTO(10l,"Mithila02",2,LocalDate.of(2024, Month.JANUARY, 15),30d);
 		CustomerRecordDTO saved = customerRewardRepository.save(customerRecordDTO);
         assertNotNull(saved);
-        assertEquals("Mithila02", saved.getCustomer());
+        assertEquals("Mithila02", saved.getCustomerName());
     }
 	
 	//Test findByCustomerId repository function

@@ -47,7 +47,7 @@ public class MonthlyRewardServiceTest {
     public void testInsertRecord_ValidData() {
         CustomerRecordDTO record = new CustomerRecordDTO();
         record.setId(100L);
-        record.setCustomer("Mithila07");
+        record.setCustomerName("Mithila07");
         record.setBillAmount(150);
         record.setBillDate(LocalDate.of(2024, Month.JANUARY, 15));
         record.setCustomerId(1);
@@ -61,7 +61,7 @@ public class MonthlyRewardServiceTest {
     @Test
     public void testInsertRecord_InvalidData() {
         CustomerRecordDTO record = new CustomerRecordDTO();
-        record.setCustomer(null); // Invalid customer name
+        record.setCustomerName(null); // Invalid customer name
         record.setBillAmount(150);
         record.setBillDate(LocalDate.of(2024, Month.JANUARY, 15));
         record.setCustomerId(1);
@@ -118,9 +118,10 @@ public class MonthlyRewardServiceTest {
     @Test
     public void testValidateRecord_ValidData() {
         CustomerRecordDTO validRecord = new CustomerRecordDTO();
-        validRecord.setCustomer("Mithila09");
+        validRecord.setCustomerName("Mithila09");
         validRecord.setCustomerId(1);
         validRecord.setBillAmount(150.0);
+        validRecord.setBillDate(LocalDate.of(2024, Month.JANUARY, 20));
 
         boolean isValid = monthlyRewardService.validateRecord(validRecord);
         
